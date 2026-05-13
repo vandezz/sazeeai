@@ -1,6 +1,5 @@
 ﻿---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/mxafnahk/sazeeai/
-    - mkdir -p $DEPLOYPATH
-    - /bin/cp -R . $DEPLOYPATH
+    - /bin/mkdir -p /home/mxafnahk/sazeeai
+    - /bin/cp -R /home/mxafnahk/repositories/sazeeai/. /home/mxafnahk/sazeeai/
