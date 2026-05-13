@@ -1,6 +1,6 @@
----
+﻿---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/mxafnahk/sazeeai/
-    - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp .htaccess $DEPLOYPATH
+    - mkdir -p $DEPLOYPATH
+    - /bin/cp -R . $DEPLOYPATH
