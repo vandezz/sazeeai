@@ -9,7 +9,7 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     Options +FollowSymlinks
     RewriteEngine On
-    RewriteBase /sazeeai/
+    RewriteBase /
 
     # Redirect trailing slashes
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -29,9 +29,9 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="<?= base_url('auth/login') ?>"
+            <a href="<?= $authUser ? base_url('generator') : base_url('auth/login') ?>"
                class="px-9 py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-600/40 transition-all transform hover:scale-105 text-base">
-                Masuk ke Aplikasi →
+                <?= $authUser ? 'Buka Generator →' : 'Masuk ke Aplikasi →' ?>
             </a>
             <a href="#cara-akses"
                class="px-9 py-4 border border-white/20 hover:border-white/40 text-white font-semibold rounded-xl transition-all text-base">
@@ -107,6 +107,7 @@
                     </div>
                 </div>
                 <!-- Lock overlay -->
+                <?php if (! $authUser): ?>
                 <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-950/70 backdrop-blur-[2px]">
                     <div class="text-center">
                         <div class="w-16 h-16 rounded-full bg-brand-600/20 border border-brand-500/40 flex items-center justify-center mx-auto mb-4">
@@ -119,6 +120,13 @@
                         </a>
                     </div>
                 </div>
+                <?php else: ?>
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-950/50 backdrop-blur-[1px]">
+                    <a href="<?= base_url('generator') ?>" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl transition-all">
+                        Buka Generator →
+                    </a>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -232,11 +240,18 @@
         </div>
 
         <div class="mt-10 text-center">
-            <p class="text-gray-400 text-sm mb-5">Sudah punya akun?</p>
-            <a href="<?= base_url('auth/login') ?>"
-               class="inline-block px-10 py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all transform hover:scale-105 text-base">
-                Login ke SazeeAI →
-            </a>
+            <?php if ($authUser): ?>
+                <a href="<?= base_url('generator') ?>"
+                   class="inline-block px-10 py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all transform hover:scale-105 text-base">
+                    Buka Generator →
+                </a>
+            <?php else: ?>
+                <p class="text-gray-400 text-sm mb-5">Sudah punya akun?</p>
+                <a href="<?= base_url('auth/login') ?>"
+                   class="inline-block px-10 py-4 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all transform hover:scale-105 text-base">
+                    Login ke SazeeAI →
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -279,10 +294,17 @@
                class="px-9 py-4 bg-white text-brand-700 font-bold rounded-xl hover:bg-brand-50 shadow-lg transition-all transform hover:scale-105 text-base">
                 Dapatkan Akses →
             </a>
+            <?php if ($authUser): ?>
+            <a href="<?= base_url('generator') ?>"
+               class="px-9 py-4 border border-white/30 hover:border-white/60 text-white font-semibold rounded-xl transition-all text-base">
+                Buka Generator →
+            </a>
+            <?php else: ?>
             <a href="<?= base_url('auth/login') ?>"
                class="px-9 py-4 border border-white/30 hover:border-white/60 text-white font-semibold rounded-xl transition-all text-base">
                 Sudah Punya Akun? Login
             </a>
+            <?php endif; ?>
         </div>
     </div>
 </section>
