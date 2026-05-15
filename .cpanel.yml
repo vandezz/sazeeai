@@ -1,5 +1,5 @@
 ﻿---
 deployment:
   tasks:
-    - /bin/mkdir -p /home/mxafnahk/sazeeai
-    - /bin/cp -R /home/mxafnahk/repositories/sazeeai/. /home/mxafnahk/sazeeai/
+    - /bin/mkdir -p /home/mxafnahk/sazee.biz.id
+    - /bin/cp -R /home/mxafnahk/repositories/sazeeai/. /home/mxafnahk/sazee.biz.id/
