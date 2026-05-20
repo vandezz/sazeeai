@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - /bin/mkdir -p /home/mxafnahk/sazee.biz.id
-    - /bin/cp -R /home/mxafnahk/repositories/sazeeai/. /home/mxafnahk/sazee.biz.id/
+    - /usr/bin/rsync -a --delete /home/mxafnahk/repositories/sazeeai/ /home/mxafnahk/sazee.biz.id/
