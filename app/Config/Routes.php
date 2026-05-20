@@ -67,7 +67,13 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
     $routes->get('templates/(:num)/edit', 'Admin\Templates::edit/$1');
     $routes->post('templates/(:num)', 'Admin\Templates::update/$1');
     $routes->post('templates/(:num)/delete', 'Admin\Templates::delete/$1');
-    $routes->get('platforms',      'Admin\Platforms::index');
+    $routes->get('platforms',                        'Admin\Platforms::index');
+    $routes->get('platforms/create',                  'Admin\Platforms::create');
+    $routes->post('platforms',                        'Admin\Platforms::store');
+    $routes->get('platforms/(:num)/edit',             'Admin\Platforms::edit/$1');
+    $routes->post('platforms/(:num)',                 'Admin\Platforms::update/$1');
+    $routes->post('platforms/(:num)/toggle',          'Admin\Platforms::toggle/$1');
+    $routes->post('platforms/(:num)/delete',          'Admin\Platforms::delete/$1');
     $routes->get('styles',         'Admin\Styles::index');
     $routes->get('prompts',        'Admin\Prompts::index');
     $routes->get('analytics',      'Admin\Analytics::index');
