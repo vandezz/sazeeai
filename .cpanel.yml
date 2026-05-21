@@ -2,4 +2,8 @@
 deployment:
   tasks:
     - /bin/mkdir -p /home/mxafnahk/sazee.biz.id
-    - /usr/bin/rsync -a --delete --exclude='vendor/' --exclude='writable/logs/' --exclude='writable/cache/' --exclude='writable/session/' --exclude='.env' /home/mxafnahk/repositories/sazeeai/ /home/mxafnahk/sazee.biz.id/
+    - /bin/cp -rf /home/mxafnahk/repositories/sazeeai/app/ /home/mxafnahk/sazee.biz.id/app/
+    - /bin/cp -rf /home/mxafnahk/repositories/sazeeai/public/ /home/mxafnahk/sazee.biz.id/public/
+    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/.cpanel.yml /home/mxafnahk/sazee.biz.id/.cpanel.yml
+    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/composer.json /home/mxafnahk/sazee.biz.id/composer.json
+    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/spark /home/mxafnahk/sazee.biz.id/spark
