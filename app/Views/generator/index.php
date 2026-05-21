@@ -200,12 +200,24 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Color Theme <span class="text-red-500">*</span></label>
-                            <select x-model="form.color_theme" required class="form-input">
+                            <select x-model="colorThemeSelect"
+                                    @change="form.color_theme = colorThemeSelect === '__custom__' ? '' : colorThemeSelect"
+                                    required
+                                    :required="colorThemeSelect !== '__custom__'"
+                                    class="form-input">
                                 <option value="">Pilih warna...</option>
                                 <?php foreach (['Gold & Black','Blue & White','Red & Black','Green & White','Purple & Gold','Monochrome','Pastel Tones','Neon & Dark','Earthy Tones','Vibrant Multi-Color'] as $c): ?>
                                 <option value="<?= $c ?>"><?= $c ?></option>
                                 <?php endforeach; ?>
+                                <option value="__custom__">✏️ Custom...</option>
                             </select>
+                            <input x-show="colorThemeSelect === '__custom__'"
+                                   x-model="form.color_theme"
+                                   type="text"
+                                   :required="colorThemeSelect === '__custom__'"
+                                   class="form-input mt-2"
+                                   placeholder="Contoh: Tosca & Gold, Pink & Navy..."
+                                   x-cloak>
                         </div>
                     </div>
 
@@ -480,6 +492,7 @@ function promptGenerator() {
             image_position: 'Center',
             design_style: '',
             color_theme: '',
+            colorThemeSelect: '',
             aspect_ratio: '',
             ai_platform: '',
             image_mood: '',
