@@ -69,7 +69,7 @@
                     <div class="form-group">
                         <label class="form-label">Deskripsi Singkat <span class="text-gray-400 font-normal">(Opsional)</span></label>
                         <textarea x-model="form.product_description" rows="3"
-                                  class="form-input resize-none" placeholder="Gambarkan produk secara singkat..."></textarea>
+                                  class="form-input resize-y min-h-[72px]" placeholder="Gambarkan produk secara singkat..."></textarea>
                     </div>
 
                     <div class="form-group">

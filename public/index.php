@@ -57,3 +57,8 @@ $paths = new Paths();
 require $paths->systemDirectory . '/Boot.php';
 
 exit(Boot::bootWeb($paths));
+
+/*
+Admin login: admin@sazeeai.com
+Admin@1234
+*/

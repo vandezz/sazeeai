@@ -148,10 +148,27 @@ class Auth extends BaseController
                 'reset_token'   => $token,
                 'reset_expires' => $expires,
             ]);
-            // In production: send email with reset link
-            // For now show the link in flash for development
+
             $resetLink = base_url("auth/reset/{$token}");
-            session()->setFlashdata('reset_link', $resetLink);
+
+            // Render HTML email body
+            $emailBody = view('email/reset_password', [
+                'name'      => $user['name'],
+                'resetLink' => $resetLink,
+            ]);
+
+            // Send email via SMTP
+            $mailer = \Config\Services::email();
+            $mailer->setTo($user['email'], $user['name']);
+            $mailer->setReplyTo('noreply@sazee.biz.id', 'SazeeAI');
+            $mailer->setSubject('Reset Password – SazeeAI');
+            $mailer->setMessage($emailBody);
+            $mailer->setHeader('X-Mailer', 'SazeeAI Mailer');
+            $mailer->setHeader('X-Priority', '3');
+
+            if (! $mailer->send()) {
+                log_message('error', 'Reset password email failed: ' . $mailer->printDebugger(['headers', 'subject', 'body']));
+            }
         }
 
         // Always show success to prevent email enumeration

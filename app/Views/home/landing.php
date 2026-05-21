@@ -273,7 +273,29 @@
 <section class="py-20 bg-gradient-to-br from-brand-700 via-brand-600 to-indigo-700 text-white">
     <div class="max-w-3xl mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Siap Membuat Banner Iklan Profesional?</h2>
-        <p class="text-brand-100 mb-8 text-lg">Dapatkan akses dan mulai generate prompt AI berkualitas tinggi hari ini.</p>
+        <p class="text-brand-100 mb-6 text-lg">Dapatkan akses dan mulai generate prompt AI berkualitas tinggi hari ini.</p>
+
+        <!-- Countdown Timer -->
+        <div class="mb-8">
+            <p class="text-brand-200 text-sm font-medium mb-3 uppercase tracking-widest">⏳ Penawaran berakhir dalam</p>
+            <div class="inline-flex items-center gap-2 sm:gap-3" id="countdown-timer">
+                <div class="flex flex-col items-center">
+                    <span id="cd-hours" class="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none">01</span>
+                    <span class="text-brand-200 text-xs mt-1 uppercase tracking-widest">Jam</span>
+                </div>
+                <span class="text-3xl sm:text-4xl font-extrabold text-brand-300 pb-4">:</span>
+                <div class="flex flex-col items-center">
+                    <span id="cd-minutes" class="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none">00</span>
+                    <span class="text-brand-200 text-xs mt-1 uppercase tracking-widest">Menit</span>
+                </div>
+                <span class="text-3xl sm:text-4xl font-extrabold text-brand-300 pb-4">:</span>
+                <div class="flex flex-col items-center">
+                    <span id="cd-seconds" class="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none">00</span>
+                    <span class="text-brand-200 text-xs mt-1 uppercase tracking-widest">Detik</span>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#cara-akses"
                class="px-9 py-4 bg-white text-brand-700 font-bold rounded-xl hover:bg-brand-50 shadow-lg transition-all transform hover:scale-105 text-base">
@@ -286,5 +308,41 @@
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'sazeeai_cta_expiry';
+    const DURATION_MS = 60 * 60 * 1000; // 1 jam
+
+    let expiry = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+    if (!expiry || Date.now() > expiry) {
+        expiry = Date.now() + DURATION_MS;
+        localStorage.setItem(STORAGE_KEY, expiry);
+    }
+
+    const elH = document.getElementById('cd-hours');
+    const elM = document.getElementById('cd-minutes');
+    const elS = document.getElementById('cd-seconds');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+        const diff = Math.max(0, expiry - Date.now());
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        elH.textContent = pad(h);
+        elM.textContent = pad(m);
+        elS.textContent = pad(s);
+        if (diff <= 0) {
+            clearInterval(timer);
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    }
+
+    tick();
+    const timer = setInterval(tick, 1000);
+})();
+</script>
 
 <?= $this->endSection() ?>

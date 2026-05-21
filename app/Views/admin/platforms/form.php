@@ -65,7 +65,7 @@
             </div>
 
             <div class="flex gap-3 pt-2">
-                <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm transition-all">
+                <button type="submit" class="px-6 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl text-sm transition-all">
                     <?= $platform ? 'Update Platform' : 'Simpan Platform' ?>
                 </button>
                 <a href="<?= base_url('admin/platforms') ?>" class="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-300 font-medium rounded-xl text-sm transition-all">Batal</a>
