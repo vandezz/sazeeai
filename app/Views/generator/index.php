@@ -492,7 +492,6 @@ function promptGenerator() {
             image_position: 'Center',
             design_style: '',
             color_theme: '',
-            colorThemeSelect: '',
             aspect_ratio: '',
             ai_platform: '',
             image_mood: '',
@@ -511,6 +510,7 @@ function promptGenerator() {
         saved: false,
         promptId: null,
         downloadUrl: '#',
+        colorThemeSelect: '',
         mode: 'manual',
 
         setMode(m) {
