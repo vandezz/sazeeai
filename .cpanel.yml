@@ -3,4 +3,3 @@ deployment:
   tasks:
     - /bin/mkdir -p /home/mxafnahk/sazee.biz.id
     - /usr/bin/rsync -a --delete --exclude='vendor/' --exclude='writable/logs/' --exclude='writable/cache/' --exclude='writable/session/' --exclude='.env' /home/mxafnahk/repositories/sazeeai/ /home/mxafnahk/sazee.biz.id/
-    - cd /home/mxafnahk/sazee.biz.id && /usr/bin/php8.1 /usr/local/bin/composer install --no-dev --optimize-autoloader --quiet
