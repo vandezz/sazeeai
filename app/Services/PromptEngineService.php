@@ -37,6 +37,22 @@ class PromptEngineService
         $styleSlug = $this->slugify($data['design_style'] ?? '');
         $style     = $this->styleModel->where('slug', $styleSlug)->first();
 
+        // --- Template-based generation ---
+        $templateSlug = $data['template_slug'] ?? '';
+        if ($templateSlug) {
+            $tpl = $this->templateModel->getBySlug($templateSlug);
+            if ($tpl && ! empty($tpl['template_body'])) {
+                $vars   = $this->buildVariables($data, $style, $platform);
+                $prompt = $this->fillTemplate($tpl['template_body'], $vars);
+                // Append platform-specific suffix if set
+                if ($platform && ! empty($platform['prompt_suffix'])) {
+                    $prompt .= ' ' . trim($platform['prompt_suffix']);
+                }
+                return $prompt;
+            }
+        }
+        // --- End template-based generation ---
+
         $platformName  = $platform ? $platform['name'] : ($data['ai_platform'] ?? 'ChatGPT');
         $styleKeywords = $style   ? $style['prompt_keywords'] : ($data['design_style'] ?? 'Modern Professional');
 
