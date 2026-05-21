@@ -32,46 +32,58 @@
             <form @submit.prevent="generate()" class="divide-y divide-gray-800/70">
                 <?= csrf_field() ?>
 
-                <!-- SECTION 0: Pilih Template / Jenis Output -->
+                <!-- MODE TOGGLE: Manual vs Template -->
                 <?php if (! empty($templates)): ?>
-                <div class="px-6 pt-6 pb-5 space-y-3">
-                    <div class="flex items-center gap-3 mb-1">
-                        <div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-white">Pilih Jenis Output</h3>
-                            <p class="text-xs text-gray-500 mt-0.5">Template menentukan format prompt yang dihasilkan</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <?php
-                        $catIcons = [
-                            'flyer'  => ['color' => 'bg-orange-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'],
-                            'social' => ['color' => 'bg-blue-500',   'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>'],
-                            'poster' => ['color' => 'bg-purple-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>'],
-                            'email'  => ['color' => 'bg-teal-500',   'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>'],
-                        ];
-                        $defaultIcon = ['color' => 'bg-gray-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>'];
-                        foreach ($templates as $tpl):
-                            $icon = $catIcons[$tpl['category']] ?? $defaultIcon;
-                        ?>
+                <div class="px-6 pt-5 pb-4">
+                    <div class="flex items-center bg-gray-800/60 rounded-xl p-1 gap-1">
                         <button type="button"
-                                @click="form.template_slug = '<?= esc($tpl['slug']) ?>'"
-                                :class="form.template_slug === '<?= esc($tpl['slug']) ?>' ? 'border-violet-500 bg-violet-900/30 ring-1 ring-violet-500/40' : 'border-gray-700/80 bg-gray-800/40 hover:border-gray-500'"
-                                class="relative flex items-start gap-2.5 p-3 rounded-xl border transition-all text-left">
-                            <div class="w-7 h-7 rounded-lg <?= $icon['color'] ?> flex items-center justify-center shrink-0 mt-0.5">
-                                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><?= $icon['svg'] ?></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-xs font-semibold text-white leading-tight"><?= esc($tpl['name']) ?></p>
-                                <p class="text-[10px] uppercase tracking-widest text-gray-500 mt-0.5"><?= esc($tpl['category']) ?></p>
-                            </div>
-                            <div x-show="form.template_slug === '<?= esc($tpl['slug']) ?>'" class="absolute top-2 right-2" x-cloak>
-                                <svg class="w-3.5 h-3.5 text-violet-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                            </div>
+                                @click="setMode('manual')"
+                                :class="mode === 'manual' ? 'bg-gray-700 text-white shadow' : 'text-gray-400 hover:text-gray-300'"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Isi Manual
                         </button>
-                        <?php endforeach; ?>
+                        <button type="button"
+                                @click="setMode('template')"
+                                :class="mode === 'template' ? 'bg-violet-600 text-white shadow' : 'text-gray-400 hover:text-gray-300'"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            Pakai Template
+                        </button>
+                    </div>
+
+                    <!-- Template cards — hanya tampil saat mode template -->
+                    <div x-show="mode === 'template'" x-transition class="mt-3 space-y-2" x-cloak>
+                        <p class="text-xs text-gray-500">Pilih jenis output prompt yang diinginkan:</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <?php
+                            $catIcons = [
+                                'flyer'  => ['color' => 'bg-orange-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'],
+                                'social' => ['color' => 'bg-blue-500',   'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>'],
+                                'poster' => ['color' => 'bg-purple-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>'],
+                                'email'  => ['color' => 'bg-teal-500',   'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>'],
+                            ];
+                            $defaultIcon = ['color' => 'bg-gray-500', 'svg' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>'];
+                            foreach ($templates as $tpl):
+                                $icon = $catIcons[$tpl['category']] ?? $defaultIcon;
+                            ?>
+                            <button type="button"
+                                    @click="form.template_slug = '<?= esc($tpl['slug']) ?>'"
+                                    :class="form.template_slug === '<?= esc($tpl['slug']) ?>' ? 'border-violet-500 bg-violet-900/30 ring-1 ring-violet-500/40' : 'border-gray-700/80 bg-gray-800/40 hover:border-gray-500'"
+                                    class="relative flex items-start gap-2.5 p-3 rounded-xl border transition-all text-left">
+                                <div class="w-7 h-7 rounded-lg <?= $icon['color'] ?> flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><?= $icon['svg'] ?></svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-white leading-tight"><?= esc($tpl['name']) ?></p>
+                                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mt-0.5"><?= esc($tpl['category']) ?></p>
+                                </div>
+                                <div x-show="form.template_slug === '<?= esc($tpl['slug']) ?>'" class="absolute top-2 right-2" x-cloak>
+                                    <svg class="w-3.5 h-3.5 text-violet-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                </div>
+                            </button>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -474,9 +486,9 @@ function promptGenerator() {
             typography_style: '',
             lighting_style: '',
             additional_notes: '',
-            template_slug: '<?= ! empty($templates) ? esc($templates[0]['slug'] ?? '') : '' ?>',
+            template_slug: '',
             <?php
-            // Pass templates data to Alpine.js for reactivity
+            $firstTemplateSlug = ! empty($templates) ? esc($templates[0]['slug'] ?? '') : '';
             ?>
         },
         result: '',
@@ -486,6 +498,16 @@ function promptGenerator() {
         saved: false,
         promptId: null,
         downloadUrl: '#',
+        mode: 'manual',
+
+        setMode(m) {
+            this.mode = m;
+            if (m === 'manual') {
+                this.form.template_slug = '';
+            } else {
+                this.form.template_slug = '<?= $firstTemplateSlug ?? '' ?>';
+            }
+        },
 
         async generate() {
             this.loading = true;
