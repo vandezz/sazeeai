@@ -202,7 +202,6 @@
                             <label class="form-label">Color Theme <span class="text-red-500">*</span></label>
                             <select x-model="colorThemeSelect"
                                     @change="form.color_theme = colorThemeSelect === '__custom__' ? '' : colorThemeSelect"
-                                    required
                                     :required="colorThemeSelect !== '__custom__'"
                                     class="form-input">
                                 <option value="">Pilih warna...</option>
@@ -211,13 +210,42 @@
                                 <?php endforeach; ?>
                                 <option value="__custom__">✏️ Custom...</option>
                             </select>
-                            <input x-show="colorThemeSelect === '__custom__'"
-                                   x-model="form.color_theme"
-                                   type="text"
-                                   :required="colorThemeSelect === '__custom__'"
-                                   class="form-input mt-2"
-                                   placeholder="Contoh: Tosca & Gold, Pink & Navy..."
-                                   x-cloak>
+
+                            <!-- Custom color section -->
+                            <div x-show="colorThemeSelect === '__custom__'" class="mt-2 space-y-2" x-cloak>
+                                <!-- Color pickers -->
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <p class="text-[11px] text-gray-500 mb-1">Warna Utama</p>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" x-model="colorPrimary"
+                                                   @input="updateCustomColor()"
+                                                   class="w-9 h-9 rounded-lg border border-gray-600 bg-transparent cursor-pointer p-0.5">
+                                            <span class="text-xs font-mono text-gray-400" x-text="colorPrimary"></span>
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-500 font-bold mt-4">&amp;</div>
+                                    <div class="flex-1">
+                                        <p class="text-[11px] text-gray-500 mb-1">Warna Sekunder</p>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" x-model="colorSecondary"
+                                                   @input="updateCustomColor()"
+                                                   class="w-9 h-9 rounded-lg border border-gray-600 bg-transparent cursor-pointer p-0.5">
+                                            <span class="text-xs font-mono text-gray-400" x-text="colorSecondary"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Preview + text override -->
+                                <div class="flex items-center gap-2 p-2 rounded-lg border border-gray-700 bg-gray-800/50">
+                                    <div class="w-6 h-6 rounded shrink-0" :style="'background: linear-gradient(135deg,' + colorPrimary + ' 50%,' + colorSecondary + ' 50%)'" ></div>
+                                    <input x-model="form.color_theme"
+                                           type="text"
+                                           :required="colorThemeSelect === '__custom__'"
+                                           class="flex-1 bg-transparent text-xs text-white outline-none"
+                                           placeholder="Nama warna bebas, contoh: Tosca &amp; Gold">
+                                </div>
+                                <p class="text-[11px] text-gray-500">Pilih dari color picker atau ketik nama warna langsung.</p>
+                            </div>
                         </div>
                     </div>
 
@@ -511,7 +539,13 @@ function promptGenerator() {
         promptId: null,
         downloadUrl: '#',
         colorThemeSelect: '',
+        colorPrimary: '#7C3AED',
+        colorSecondary: '#F59E0B',
         mode: 'manual',
+
+        updateCustomColor() {
+            this.form.color_theme = this.colorPrimary + ' & ' + this.colorSecondary;
+        },
 
         setMode(m) {
             this.mode = m;
