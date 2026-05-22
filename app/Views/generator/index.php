@@ -201,7 +201,7 @@
                         <div class="form-group">
                             <label class="form-label">Color Theme <span class="text-red-500">*</span></label>
                             <select x-model="colorThemeSelect"
-                                    @change="form.color_theme = colorThemeSelect === '__custom__' ? '' : colorThemeSelect"
+                                    @change="colorThemeSelect === '__custom__' ? updateCustomColor() : (form.color_theme = colorThemeSelect)"
                                     :required="colorThemeSelect !== '__custom__'"
                                     class="form-input">
                                 <option value="">Pilih warna...</option>

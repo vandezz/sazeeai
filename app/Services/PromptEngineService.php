@@ -165,6 +165,11 @@ class PromptEngineService
 
     protected function extractColors(string $colorTheme): array
     {
+        // Handle custom hex color pairs: "#RRGGBB & #RRGGBB"
+        if (preg_match('/^(#[0-9A-Fa-f]{6})\s*&\s*(#[0-9A-Fa-f]{6})$/', trim($colorTheme), $m)) {
+            return [strtoupper($m[1]), strtoupper($m[2])];
+        }
+
         $map = [
             'Gold & Black'         => ['#D4AF37', '#0A0A0A'],
             'Blue & White'         => ['#1E40AF', '#FFFFFF'],
