@@ -664,7 +664,7 @@ function promptGenerator() {
                     },
                     body: new URLSearchParams({
                         ...this.form,
-                        '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
+                        '<?= csrf_token() ?>': this._getCsrf(),
                     }),
                 });
 
@@ -736,9 +736,14 @@ function promptGenerator() {
             this.showSaveModal = false;
         },
 
+        _getCsrf() {
+            const match = document.cookie.match(/(?:^|;\s*)csrf_cookie_name=([^;]*)/);
+            return match ? decodeURIComponent(match[1]) : '<?= csrf_hash() ?>';
+        },
+
         async _doSaveToggle(name) {
             try {
-                const body = { '<?= csrf_token() ?>': '<?= csrf_hash() ?>' };
+                const body = { '<?= csrf_token() ?>': this._getCsrf() };
                 if (name) body.save_name = name;
                 const res = await fetch(`<?= base_url('dashboard/save-prompt/') ?>${this.promptId}`, {
                     method: 'POST',
