@@ -14,11 +14,18 @@
                 <?= ($sub['prompts_used'] ?? 0) ?>/<?= ($sub['prompts_limit'] ?? 10) ?> prompts used
             </p>
         </div>
-        <a href="<?= base_url('generator') ?>"
-           class="flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold text-sm transition-all shadow-md">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            New Prompt
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="<?= base_url('dashboard/saved') ?>"
+               class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-xl font-semibold text-sm transition-all shadow-md">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                Saved Prompts
+            </a>
+            <a href="<?= base_url('generator') ?>"
+               class="flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold text-sm transition-all shadow-md">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                New Prompt
+            </a>
+        </div>
     </div>
 
     <!-- Stats cards -->
@@ -32,13 +39,16 @@
         ];
         ?>
         <?php foreach ($cards as $card): ?>
-        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        <?php $cardHref = $card[0] === 'Saved Prompts' ? base_url('dashboard/saved') : null; ?>
+        <<?= $cardHref ? 'a' : 'div' ?>
+            <?= $cardHref ? 'href="' . $cardHref . '"' : '' ?>
+            class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 <?= $cardHref ? 'block hover:shadow-md transition-all hover:border-amber-200 dark:hover:border-amber-800' : '' ?>">
             <div class="flex items-center justify-between mb-3">
                 <span class="text-sm text-gray-500 dark:text-gray-400"><?= $card[0] ?></span>
                 <span class="text-xl"><?= $card[2] ?></span>
             </div>
             <p class="text-2xl font-bold <?= $card[3] ?>"><?= esc($card[1]) ?></p>
-        </div>
+        </<?= $cardHref ? 'a' : 'div' ?>>
         <?php endforeach; ?>
     </div>
 
@@ -62,7 +72,10 @@
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <h2 class="font-semibold text-gray-900 dark:text-white">Recent Prompts</h2>
-            <a href="<?= base_url('dashboard/history') ?>" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">View all →</a>
+            <div class="flex items-center gap-4">
+                <a href="<?= base_url('dashboard/saved') ?>" class="text-sm text-amber-600 dark:text-amber-400 hover:underline">Saved prompts</a>
+                <a href="<?= base_url('dashboard/history') ?>" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">View all →</a>
+            </div>
         </div>
 
         <?php if (empty($recentPrompts)): ?>
