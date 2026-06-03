@@ -374,9 +374,11 @@
                             Download
                         </button>
                         <?php if (session()->get('user_id')): ?>
-                        <button @click="savePrompt()" :class="saved ? 'text-amber-400 border-amber-600 bg-amber-900/30' : 'text-gray-400 border-gray-600 bg-gray-700 hover:bg-amber-900/20'"
-                                class="p-2 rounded-xl border transition-all" title="Simpan prompt">
+                        <button @click="savePrompt()"
+                                :class="saved ? 'bg-amber-500 border-amber-400 text-gray-900 shadow-amber-900/40' : 'bg-amber-600 hover:bg-amber-500 border-amber-500 text-white shadow-amber-900/40'"
+                                class="flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-xl border shadow-lg transition-all">
                             <svg class="w-4 h-4" :fill="saved ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                            <span x-text="saved ? '✓ Tersimpan' : 'Simpan'"></span>
                         </button>
                         <?php endif; ?>
                     </div>
@@ -448,6 +450,24 @@
                             </div>
                             <pre class="text-xs text-green-300 whitespace-pre-wrap leading-relaxed font-mono p-4 max-h-[520px] overflow-y-auto prompt-output" x-text="result"></pre>
                         </div>
+
+                        <!-- Simpan prompt — tombol utama di bawah hasil -->
+                        <?php if (session()->get('user_id')): ?>
+                        <div class="mt-4" x-show="result && !saved">
+                            <button @click="savePrompt()"
+                                    class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold text-sm transition-all shadow-md shadow-amber-900/30">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                                Simpan Prompt — Buka Kembali Nanti
+                            </button>
+                        </div>
+                        <div class="mt-4" x-show="result && saved">
+                            <a :href="'<?= base_url('dashboard/saved') ?>'"
+                               class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-amber-900/40 border border-amber-600 text-amber-400 font-bold text-sm transition-all hover:bg-amber-900/60">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                                ✓ Tersimpan — Lihat Daftar Prompt Saya
+                            </a>
+                        </div>
+                        <?php endif; ?>
 
                         <!-- Status + catatan bawah -->
                         <div class="mt-3 space-y-2">
