@@ -590,6 +590,7 @@ function promptGenerator() {
         colorPrimary: '#7C3AED',
         colorSecondary: '#F59E0B',
         mode: 'manual',
+        csrfHash: '<?= csrf_hash() ?>',
         // Save modal state
         showSaveModal: false,
         saveName: '',
@@ -664,16 +665,17 @@ function promptGenerator() {
                     },
                     body: new URLSearchParams({
                         ...this.form,
-                        '<?= csrf_token() ?>': this._getCsrf(),
+                        '<?= csrf_token() ?>': this.csrfHash,
                     }),
                 });
 
                 const data = await res.json();
 
                 if (data.success) {
-                    this.result   = data.prompt;
-                    this.promptId = data.promptId;
-                    this.saved    = false;
+                    this.result    = data.prompt;
+                    this.promptId  = data.promptId;
+                    this.saved     = false;
+                    if (data.csrf_hash) this.csrfHash = data.csrf_hash;
                     this.$nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
                 } else if (data.errors) {
                     this.errors = data.errors;
@@ -736,14 +738,9 @@ function promptGenerator() {
             this.showSaveModal = false;
         },
 
-        _getCsrf() {
-            const match = document.cookie.match(/(?:^|;\s*)csrf_cookie_name=([^;]*)/);
-            return match ? decodeURIComponent(match[1]) : '<?= csrf_hash() ?>';
-        },
-
         async _doSaveToggle(name) {
             try {
-                const body = { '<?= csrf_token() ?>': this._getCsrf() };
+                const body = { '<?= csrf_token() ?>': this.csrfHash };
                 if (name) body.save_name = name;
                 const res = await fetch(`<?= base_url('dashboard/save-prompt/') ?>${this.promptId}`, {
                     method: 'POST',
@@ -754,7 +751,10 @@ function promptGenerator() {
                     body: new URLSearchParams(body),
                 });
                 const data = await res.json();
-                if (data.success) { this.saved = data.saved; }
+                if (data.success) {
+                    this.saved    = data.saved;
+                    if (data.csrf_hash) this.csrfHash = data.csrf_hash;
+                }
             } catch (e) {
                 console.error('Save failed', e);
             }

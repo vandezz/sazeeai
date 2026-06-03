@@ -137,9 +137,10 @@ class Generator extends BaseController
         }
 
         return $this->response->setJSON([
-            'success'  => true,
-            'prompt'   => $generatedPrompt,
-            'promptId' => $promptId,
+            'success'   => true,
+            'prompt'    => $generatedPrompt,
+            'promptId'  => $promptId,
+            'csrf_hash' => csrf_hash(),
         ]);
     }
 

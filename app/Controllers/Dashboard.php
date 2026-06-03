@@ -101,8 +101,9 @@ class Dashboard extends BaseController
         $this->promptModel->update($id, $updateData);
 
         return $this->response->setJSON([
-            'success' => true,
-            'saved'   => (bool) $newState,
+            'success'   => true,
+            'saved'     => (bool) $newState,
+            'csrf_hash' => csrf_hash(),
         ]);
     }
 
