@@ -14,7 +14,8 @@ class PromptModel extends Model
 
     protected $allowedFields = [
         'user_id', 'title', 'product_name', 'brand_name', 'headline',
-        'subheadline', 'product_description', 'cta_text', 'target_audience',
+        'subheadline', 'product_description', 'features', 'image_count', 'image_position',
+        'cta_text', 'target_audience',
         'design_style', 'color_theme', 'aspect_ratio', 'ai_platform',
         'image_mood', 'typography_style', 'lighting_style', 'additional_notes',
         'generated_prompt', 'template_id', 'is_saved',

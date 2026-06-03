@@ -89,13 +89,40 @@ class Dashboard extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Not found.']);
         }
 
-        $newState = $prompt['is_saved'] ? 0 : 1;
-        $this->promptModel->update($id, ['is_saved' => $newState]);
+        $newState  = $prompt['is_saved'] ? 0 : 1;
+        $updateData = ['is_saved' => $newState];
+
+        // Allow optional custom save name when saving (not when unsaving)
+        $saveName = trim((string) $this->request->getPost('save_name'));
+        if ($newState === 1 && $saveName !== '') {
+            $updateData['title'] = $saveName;
+        }
+
+        $this->promptModel->update($id, $updateData);
 
         return $this->response->setJSON([
             'success' => true,
             'saved'   => (bool) $newState,
         ]);
+    }
+
+    public function renamePrompt(int $id)
+    {
+        $userId = session()->get('user_id');
+        $prompt = $this->promptModel->find($id);
+
+        if (! $prompt || $prompt['user_id'] !== $userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Not found.']);
+        }
+
+        $newTitle = trim((string) $this->request->getPost('title'));
+        if ($newTitle === '') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Title cannot be empty.']);
+        }
+
+        $this->promptModel->update($id, ['title' => $newTitle]);
+
+        return $this->response->setJSON(['success' => true]);
     }
 
     public function deletePrompt(int $id)

@@ -94,6 +94,9 @@ class Generator extends BaseController
             'headline'            => $data['headline']             ?? null,
             'subheadline'         => $data['subheadline']          ?? null,
             'product_description' => $data['product_description']  ?? null,
+            'features'            => $data['features']             ?? null,
+            'image_count'         => isset($data['image_count']) ? (int) $data['image_count'] : 1,
+            'image_position'      => $data['image_position']      ?? 'Center',
             'cta_text'            => $data['cta_text']             ?? null,
             'target_audience'     => $data['target_audience']      ?? null,
             'design_style'        => $data['design_style'],
@@ -137,5 +140,45 @@ class Generator extends BaseController
             ->setHeader('Content-Type', 'text/plain')
             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->setBody($content);
+    }
+
+    /**
+     * Return prompt form data as JSON so the generator form can be pre-filled.
+     */
+    public function loadPrompt(int $id)
+    {
+        $userId = session()->get('user_id');
+        $prompt = $this->promptModel->find($id);
+
+        if (! $prompt || $prompt['user_id'] !== $userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Not found.']);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data'    => [
+                'product_name'        => $prompt['product_name']        ?? '',
+                'brand_name'          => $prompt['brand_name']          ?? '',
+                'headline'            => $prompt['headline']             ?? '',
+                'subheadline'         => $prompt['subheadline']          ?? '',
+                'product_description' => $prompt['product_description']  ?? '',
+                'features'            => $prompt['features']             ?? '',
+                'image_count'         => (string) ($prompt['image_count'] ?? '1'),
+                'image_position'      => $prompt['image_position']      ?? 'Center',
+                'cta_text'            => $prompt['cta_text']             ?? '',
+                'target_audience'     => $prompt['target_audience']      ?? '',
+                'design_style'        => $prompt['design_style']         ?? '',
+                'color_theme'         => $prompt['color_theme']          ?? '',
+                'aspect_ratio'        => $prompt['aspect_ratio']         ?? '',
+                'ai_platform'         => $prompt['ai_platform']          ?? '',
+                'image_mood'          => $prompt['image_mood']           ?? '',
+                'typography_style'    => $prompt['typography_style']     ?? '',
+                'lighting_style'      => $prompt['lighting_style']       ?? '',
+                'additional_notes'    => $prompt['additional_notes']     ?? '',
+                'title'               => $prompt['title']                ?? '',
+            ],
+            'generated_prompt' => $prompt['generated_prompt'] ?? '',
+            'prompt_id'        => $prompt['id'],
+        ]);
     }
 }

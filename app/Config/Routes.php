@@ -32,6 +32,7 @@ $routes->group('auth', function ($routes) {
 $routes->get('generator',          'Generator::index',            ['filter' => 'auth']);
 $routes->post('generator/generate','Generator::generate',         ['filter' => 'auth']);
 $routes->get('generator/download/(:num)', 'Generator::download/$1', ['filter' => 'auth']);
+$routes->get('generator/load/(:num)',     'Generator::loadPrompt/$1', ['filter' => 'auth']);
 
 // ============================================================
 // DASHBOARD (authenticated users)
@@ -40,7 +41,8 @@ $routes->group('dashboard', ['filter' => 'auth'], function ($routes) {
     $routes->get('/',              'Dashboard::index');
     $routes->get('history',        'Dashboard::history');
     $routes->get('saved',          'Dashboard::saved');
-    $routes->post('save-prompt/(:num)', 'Dashboard::savePrompt/$1');
+    $routes->post('save-prompt/(:num)',   'Dashboard::savePrompt/$1');
+    $routes->post('rename-prompt/(:num)', 'Dashboard::renamePrompt/$1');
     $routes->post('delete-prompt/(:num)', 'Dashboard::deletePrompt/$1');
     $routes->get('profile',        'Dashboard::profile');
     $routes->post('profile',       'Dashboard::updateProfile');

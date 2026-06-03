@@ -482,6 +482,34 @@
         </div>
     </div>
 </section>
+
+    <!-- ========================
+         SAVE PROMPT MODAL
+         ======================== -->
+    <div x-show="showSaveModal" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="background: rgba(0,0,0,0.7);">
+        <div @click.outside="showSaveModal = false"
+             class="bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold text-white mb-1">Simpan Prompt</h3>
+            <p class="text-sm text-gray-400 mb-4">Beri nama agar mudah ditemukan nanti.</p>
+            <input type="text" x-model="saveName" placeholder="Nama prompt, contoh: Banner Ramadan NexaTech"
+                   @keydown.enter="confirmSave()"
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-600 bg-gray-800 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-brand-500 mb-4">
+            <div class="flex items-center gap-3">
+                <button @click="confirmSave()" :disabled="saveLoading"
+                        class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-gray-900 font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                    <svg x-show="saveLoading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <svg x-show="!saveLoading" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                    <span x-text="saveLoading ? 'Menyimpan...' : 'Simpan'"></span>
+                </button>
+                <button @click="showSaveModal = false"
+                        class="px-5 py-2.5 rounded-xl border border-gray-600 text-gray-400 hover:text-white hover:border-gray-500 text-sm font-medium transition-all">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -542,6 +570,52 @@ function promptGenerator() {
         colorPrimary: '#7C3AED',
         colorSecondary: '#F59E0B',
         mode: 'manual',
+        // Save modal state
+        showSaveModal: false,
+        saveName: '',
+        saveLoading: false,
+
+        async init() {
+            const params = new URLSearchParams(window.location.search);
+            const loadId = params.get('load');
+            if (loadId) {
+                await this.loadSavedPrompt(parseInt(loadId, 10));
+            }
+        },
+
+        async loadSavedPrompt(id) {
+            try {
+                const res  = await fetch(`<?= base_url('generator/load/') ?>${id}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const d = data.data;
+                    Object.keys(d).forEach(k => {
+                        if (k in this.form) this.form[k] = d[k];
+                    });
+                    // Handle custom color theme
+                    const presets = ['Gold & Black','Blue & White','Red & Black','Green & White','Purple & Gold','Monochrome','Pastel Tones','Neon & Dark','Earthy Tones','Vibrant Multi-Color'];
+                    if (d.color_theme && !presets.includes(d.color_theme)) {
+                        this.colorThemeSelect = '__custom__';
+                    } else {
+                        this.colorThemeSelect = d.color_theme || '';
+                    }
+                    // Restore last generated prompt in output
+                    if (data.generated_prompt) {
+                        this.result   = data.generated_prompt;
+                        this.promptId = data.prompt_id;
+                        this.saved    = true;
+                    }
+                    // Clean URL param without reload
+                    const url = new URL(window.location);
+                    url.searchParams.delete('load');
+                    window.history.replaceState({}, '', url);
+                }
+            } catch (e) {
+                console.error('Load failed', e);
+            }
+        },
 
         updateCustomColor() {
             this.form.color_theme = this.colorPrimary + ' & ' + this.colorSecondary;
@@ -625,14 +699,34 @@ function promptGenerator() {
 
         async savePrompt() {
             if (!this.promptId) return;
+            // If not yet saved, show modal to let user pick a name
+            if (!this.saved) {
+                this.saveName = this.form.headline || this.form.product_name || '';
+                this.showSaveModal = true;
+                return;
+            }
+            // Already saved → toggle off (unsave immediately)
+            await this._doSaveToggle('');
+        },
+
+        async confirmSave() {
+            this.saveLoading = true;
+            await this._doSaveToggle(this.saveName);
+            this.saveLoading  = false;
+            this.showSaveModal = false;
+        },
+
+        async _doSaveToggle(name) {
             try {
+                const body = { '<?= csrf_token() ?>': '<?= csrf_hash() ?>' };
+                if (name) body.save_name = name;
                 const res = await fetch(`<?= base_url('dashboard/save-prompt/') ?>${this.promptId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest',
                     },
-                    body: new URLSearchParams({ '<?= csrf_token() ?>': '<?= csrf_hash() ?>' }),
+                    body: new URLSearchParams(body),
                 });
                 const data = await res.json();
                 if (data.success) { this.saved = data.saved; }

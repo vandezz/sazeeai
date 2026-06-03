@@ -9,3 +9,4 @@ deployment:
     - /bin/cp -f /home/mxafnahk/repositories/sazeeai/preload.php /home/mxafnahk/sazee.biz.id/preload.php
     - /bin/cp -f /home/mxafnahk/repositories/sazeeai/index.php /home/mxafnahk/sazee.biz.id/index.php
     - /bin/cp -f /home/mxafnahk/repositories/sazeeai/.cpanel.yml /home/mxafnahk/sazee.biz.id/.cpanel.yml
+    - /usr/local/bin/php /home/mxafnahk/sazee.biz.id/spark migrate --no-interaction
