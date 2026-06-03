@@ -82,21 +82,26 @@ class Generator extends BaseController
 
         $data = $this->request->getPost();
 
-        // Generate the prompt
-        $generatedPrompt = $this->engine->generate($data);
+        try {
+            // Generate the prompt
+            $generatedPrompt = $this->engine->generate($data);
+        } catch (\Throwable $e) {
+            log_message('error', 'PromptEngineService::generate failed: ' . $e->getMessage());
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal membuat prompt. Silakan coba lagi.',
+            ]);
+        }
 
-        // Save to DB
-        $promptId = $this->promptModel->insert([
+        // Build insert payload — only include new columns if DB already has them
+        $insertData = [
             'user_id'             => $userId,
-            'title'               => $data['headline'] ?: $data['product_name'],
-            'product_name'        => $data['product_name'],
+            'title'               => ($data['headline'] ?? '') ?: ($data['product_name'] ?? ''),
+            'product_name'        => $data['product_name']        ?? null,
             'brand_name'          => $data['brand_name']          ?? null,
             'headline'            => $data['headline']             ?? null,
             'subheadline'         => $data['subheadline']          ?? null,
             'product_description' => $data['product_description']  ?? null,
-            'features'            => $data['features']             ?? null,
-            'image_count'         => isset($data['image_count']) ? (int) $data['image_count'] : 1,
-            'image_position'      => $data['image_position']      ?? 'Center',
             'cta_text'            => $data['cta_text']             ?? null,
             'target_audience'     => $data['target_audience']      ?? null,
             'design_style'        => $data['design_style'],
@@ -108,7 +113,23 @@ class Generator extends BaseController
             'lighting_style'      => $data['lighting_style']       ?? null,
             'additional_notes'    => $data['additional_notes']     ?? null,
             'generated_prompt'    => $generatedPrompt,
-        ]);
+        ];
+
+        // Add new columns only if migration has been run
+        $db = \Config\Database::connect();
+        if ($db->fieldExists('features', 'prompts')) {
+            $insertData['features']       = $data['features']   ?? null;
+            $insertData['image_count']    = isset($data['image_count']) ? (int) $data['image_count'] : 1;
+            $insertData['image_position'] = $data['image_position'] ?? 'Center';
+        }
+
+        try {
+            $promptId = $this->promptModel->insert($insertData);
+        } catch (\Throwable $e) {
+            log_message('error', 'PromptModel::insert failed: ' . $e->getMessage());
+            // Still return the generated prompt even if saving fails
+            $promptId = null;
+        }
 
         // Increment usage for logged-in users
         if ($userId) {

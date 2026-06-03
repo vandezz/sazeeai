@@ -661,7 +661,7 @@ function promptGenerator() {
                     this.errors = { general: data.message || 'An error occurred.' };
                 }
             } catch (e) {
-                this.errors = { general: 'Network error. Please try again.' };
+                this.errors = { general: 'Koneksi gagal. Periksa internet dan coba lagi.' };
             } finally {
                 this.loading = false;
             }
