@@ -19,7 +19,7 @@
             AI-Powered Prompt Generator
         </div>
         <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Generator AI Prompt Banner Iklan</h1>
-        <p class="text-gray-400 max-w-xl mx-auto">Isi detail kampanye iklan Anda, dan dapatkan prompt AI profesional siap pakai dalam hitungan detik.</p>
+        <p class="text-gray-400 max-w-xl mx-auto">Isi detail Judul, Deskripsi Produk Anda, dan dapatkan prompt AI profesional siap pakai dalam hitungan detik.</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
