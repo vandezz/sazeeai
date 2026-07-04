@@ -1,12 +1,17 @@
 ﻿---
 deployment:
   tasks:
+    # 1. Buat direktori tujuan jika belum ada
     - /bin/mkdir -p /home/mxafnahk/sazee.biz.id
-    - /bin/cp -rf /home/mxafnahk/repositories/sazeeai/app/ /home/mxafnahk/sazee.biz.id/app/
-    - /bin/cp -rf /home/mxafnahk/repositories/sazeeai/public/ /home/mxafnahk/sazee.biz.id/public/
-    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/composer.json /home/mxafnahk/sazee.biz.id/composer.json
-    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/spark /home/mxafnahk/sazee.biz.id/spark
-    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/preload.php /home/mxafnahk/sazee.biz.id/preload.php
-    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/index.php /home/mxafnahk/sazee.biz.id/index.php
-    - /bin/cp -f /home/mxafnahk/repositories/sazeeai/.cpanel.yml /home/mxafnahk/sazee.biz.id/.cpanel.yml
+
+    # 2. Copy file yang baru/berubah saja (update) — lebih cepat dari rf
+    - /bin/cp -ru /home/mxafnahk/repositories/sazeeai/app/ /home/mxafnahk/sazee.biz.id/app/
+    - /bin/cp -ru /home/mxafnahk/repositories/sazeeai/public/ /home/mxafnahk/sazee.biz.id/public/
+    - /bin/cp -ru /home/mxafnahk/repositories/sazeeai/writable/ /home/mxafnahk/sazee.biz.id/writable/
+    - /bin/cp -fu /home/mxafnahk/repositories/sazeeai/composer.json /home/mxafnahk/sazee.biz.id/composer.json
+    - /bin/cp -fu /home/mxafnahk/repositories/sazeeai/composer.lock /home/mxafnahk/sazee.biz.id/composer.lock 2>/dev/null || true
+    - /bin/cp -fu /home/mxafnahk/repositories/sazeeai/spark /home/mxafnahk/sazee.biz.id/spark
+    - /bin/cp -fu /home/mxafnahk/repositories/sazeeai/.env /home/mxafnahk/sazee.biz.id/.env 2>/dev/null || true
+
+    # 3. Jalankan migration database
     - /usr/local/bin/php /home/mxafnahk/sazee.biz.id/spark migrate --no-interaction
