@@ -18,7 +18,7 @@
             <span class="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse"></span>
             AI-Powered Prompt Generator
         </div>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Generator Prompt Banner Iklan</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Generator AI Prompt Banner Iklan</h1>
         <p class="text-gray-400 max-w-xl mx-auto">Isi detail kampanye iklan Anda, dan dapatkan prompt AI profesional siap pakai dalam hitungan detik.</p>
     </div>
 
@@ -504,6 +504,82 @@
 </section>
 
     <!-- ========================
+         COPY INFO POPUP
+         ======================== -->
+    <div x-show="showCopyModal" x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95"
+         @click="showCopyModal = false"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style="background: rgba(0,0,0,0.75);">
+        <div @click.stop
+             class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-green-500 to-teal-500 px-6 py-5">
+                <div class="flex items-center justify-center mb-3">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <svg class="w-7 h-7 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-white text-center">Prompt Berhasil Disalin!</h3>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-6">
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-4">
+                    <p class="text-sm text-blue-800 dark:text-blue-200 flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Prompt sudah tersimpan di clipboard. Buka aplikasi AI favorit Anda dan paste (Ctrl+V) untuk mulai generate gambar.</span>
+                    </p>
+                </div>
+                
+                <!-- Platform buttons -->
+                <div class="space-y-2">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-3">Buka AI Platform:</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button @click="window.open('https://chatgpt.com/', '_blank'); showCopyModal = false;"
+                                class="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-all">
+                            <span class="text-lg">🤖</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">ChatGPT</span>
+                        </button>
+                        <button @click="window.open('https://www.midjourney.com/', '_blank'); showCopyModal = false;"
+                                class="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-all">
+                            <span class="text-lg">🎨</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Midjourney</span>
+                        </button>
+                        <button @click="window.open('https://ideogram.ai/', '_blank'); showCopyModal = false;"
+                                class="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-all">
+                            <span class="text-lg">✨</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Ideogram</span>
+                        </button>
+                        <button @click="window.open('https://leonardo.ai/', '_blank'); showCopyModal = false;"
+                                class="flex items-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-all">
+                            <span class="text-lg">🖼️</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Leonardo AI</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="px-6 pb-6">
+                <button @click="showCopyModal = false"
+                        class="w-full py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-xl text-sm transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================
          SAVE PROMPT MODAL
          ======================== -->
     <div x-show="showSaveModal" x-cloak
@@ -550,6 +626,11 @@
 .form-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
 .form-input option { background-color: #1f2937; color: #f9fafb; }
 .form-hint { font-size: 0.75rem; color: #60a5fa; margin-top: 0.375rem; }
+
+@keyframes scale-in {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
 </style>
 
 <script>
@@ -569,7 +650,7 @@ function promptGenerator() {
             design_style: '',
             color_theme: '',
             aspect_ratio: '',
-            ai_platform: '',
+            ai_platform: 'chatgpt-dalle',
             image_mood: '',
             typography_style: '',
             lighting_style: '',
@@ -595,6 +676,8 @@ function promptGenerator() {
         showSaveModal: false,
         saveName: '',
         saveLoading: false,
+        // Copy instruction modal state
+        showCopyModal: false,
 
         async init() {
             const params = new URLSearchParams(window.location.search);
@@ -695,6 +778,14 @@ function promptGenerator() {
                 await navigator.clipboard.writeText(this.result);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2500);
+                
+                // Tampilkan modal instruksi
+                this.showCopyModal = true;
+                
+                // Buka ChatGPT di tab baru setelah jeda 1 detik
+                setTimeout(() => {
+                    window.open('https://chatgpt.com/', '_blank');
+                }, 1000);
             } catch (e) {
                 // Fallback
                 const el = document.createElement('textarea');
@@ -705,6 +796,14 @@ function promptGenerator() {
                 document.body.removeChild(el);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2500);
+                
+                // Tampilkan modal instruksi
+                this.showCopyModal = true;
+                
+                // Buka ChatGPT di tab baru setelah jeda 1 detik
+                setTimeout(() => {
+                    window.open('https://chatgpt.com/', '_blank');
+                }, 1000);
             }
         },
 
